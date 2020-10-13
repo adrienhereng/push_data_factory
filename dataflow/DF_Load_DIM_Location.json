@@ -1,0 +1,39 @@
+{
+	"name": "DF_Load_DIM_Location",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DWH2_LOCATION",
+						"type": "DatasetReference"
+					},
+					"name": "DWH2LOCATION"
+				},
+				{
+					"dataset": {
+						"referenceName": "DM_CPO",
+						"type": "DatasetReference"
+					},
+					"name": "DMCPO"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DM_LOCATION",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "Join1"
+				}
+			],
+			"script": "source(output(\n\t\tLOCATION_PK as string,\n\t\tNAME as string,\n\t\tCPO_FK as string,\n\t\tCITY as string,\n\t\tCOUNTRY_ID as string,\n\t\tZIP_CODE as string,\n\t\tLATITUDE as double,\n\t\tLONGITUDE as double,\n\t\tTECHNICAL_DATE as date,\n\t\tFUNCTIONAL_DATE as integer,\n\t\tId as integer,\n\t\tCLOSING_DATE as date\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tquery: 'SELECT *\\n  FROM [DWH2].[LOCATION] where CLOSING_DATE= (select max(CLOSING_DATE) from [DWH2].[LOCATION])',\n\tformat: 'query') ~> DWH2LOCATION\nsource(output(\n\t\tCPO_PK as string,\n\t\tNAME as string,\n\t\tCPO_GROUP_FK as string,\n\t\tBUSINESS_ACTIVITY as string,\n\t\tSERVICE_STATUS as string,\n\t\tCREATION_DATE as date,\n\t\tIN_SERVICE_DATE as date,\n\t\tRETIRED_DATE as date,\n\t\tCPO_GROUP as string,\n\t\tCLOSING_DATE as date,\n\t\tId as integer,\n\t\tFUNCTIONAL_DATE as integer\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> DMCPO\nDWH2LOCATION, DMCPO join(DWH2LOCATION@CLOSING_DATE == DMCPO@CLOSING_DATE\n\t&& CPO_FK == CPO_PK,\n\tjoinType:'left',\n\tbroadcast: 'auto')~> Join1\nJoin1 sink(input(\n\t\tLOCATION_PK as string,\n\t\tNAME as string,\n\t\tCITY as string,\n\t\tCOUNTRY_ID as string,\n\t\tZIP_CODE as string,\n\t\tLATITUDE as double,\n\t\tLONGITUDE as double,\n\t\tCLOSING_DATE as date,\n\t\tID_CPO as integer,\n\t\tId as integer,\n\t\tFUNCTIONAL_DATE as integer\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tpreSQLs:['truncate table [DM].[DIM_LOCATION]'],\n\tmapColumn(\n\t\tLOCATION_PK,\n\t\tNAME = DWH2LOCATION@NAME,\n\t\tCITY,\n\t\tCOUNTRY_ID,\n\t\tZIP_CODE,\n\t\tLATITUDE,\n\t\tLONGITUDE,\n\t\tCLOSING_DATE = DWH2LOCATION@CLOSING_DATE,\n\t\tID_CPO = DMCPO@Id,\n\t\tFUNCTIONAL_DATE = DWH2LOCATION@FUNCTIONAL_DATE\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> sink1"
+		}
+	}
+}

@@ -1,0 +1,48 @@
+{
+	"name": "ArchFileEvseModel",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "TotalevchargeBlobStorage",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "Azure Blob"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": {
+					"value": "@{CONCAT('evse_model',pipeline().RunId, '.csv')}",
+					"type": "Expression"
+				},
+				"folderPath": "evse_model",
+				"container": "archivefiles"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "model_pk",
+				"type": "String"
+			},
+			{
+				"name": "name",
+				"type": "String"
+			},
+			{
+				"name": "description",
+				"type": "String"
+			},
+			{
+				"name": "manufacturer",
+				"type": "String"
+			}
+		]
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

@@ -1,0 +1,32 @@
+{
+	"name": "DF_Load_TRANSACTION",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "STG_TRANSACTIONS",
+						"type": "DatasetReference"
+					},
+					"name": "STGTANSACTION"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DWH1_TRANSACTIONS",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "DerivedColumn1"
+				}
+			],
+			"script": "source(output(\n\t\tEVSE_ID as string,\n\t\tTOKEN_ID as string,\n\t\tAUTH_METHOD as string,\n\t\tEMSP as string,\n\t\tSESSION_START_DATE as date,\n\t\tSESSION_STOP_DATE as date,\n\t\tCONNECTOR_TYPE as string,\n\t\tCONSUMED_ENERGY as integer,\n\t\tSESSION_DURATION as integer,\n\t\tMAX_POWER as double,\n\t\tCOMPLIANCE as boolean,\n\t\tTAXED_PRICE as double,\n\t\tNON_TAXED_PRICE as double,\n\t\tCURRENCY as string,\n\t\tTECHNICAL_DATE as string,\n\t\tFUNCTIONAL_DATE as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> STGTANSACTION\nSTGTANSACTION derive(FUNCTIONAL_DATE = toInteger(left(FUNCTIONAL_DATE,8)),\n\t\tTECHNICAL_DATE = toDate(left(TECHNICAL_DATE,10),'MM/dd/yyyy')) ~> DerivedColumn1\nDerivedColumn1 sink(input(\n\t\tEVSE_ID as string,\n\t\tTOKEN_ID as string,\n\t\tAUTH_METHOD as string,\n\t\tEMSP as string,\n\t\tSESSION_START_DATE as date,\n\t\tSESSION_STOP_DATE as date,\n\t\tCONNECTOR_TYPE as string,\n\t\tCONSUMED_ENERGY as integer,\n\t\tSESSION_DURATION as integer,\n\t\tMAX_POWER as double,\n\t\tCOMPLIANCE as boolean,\n\t\tTAXED_PRICE as double,\n\t\tNON_TAXED_PRICE as double,\n\t\tCURRENCY as string,\n\t\tTECHNICAL_DATE as date,\n\t\tFUNCTIONAL_DATE as integer,\n\t\tId as integer\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tmapColumn(\n\t\tEVSE_ID,\n\t\tTOKEN_ID,\n\t\tAUTH_METHOD,\n\t\tEMSP,\n\t\tSESSION_START_DATE,\n\t\tSESSION_STOP_DATE,\n\t\tCONNECTOR_TYPE,\n\t\tCONSUMED_ENERGY,\n\t\tSESSION_DURATION,\n\t\tMAX_POWER,\n\t\tCOMPLIANCE,\n\t\tTAXED_PRICE,\n\t\tNON_TAXED_PRICE,\n\t\tCURRENCY,\n\t\tTECHNICAL_DATE,\n\t\tFUNCTIONAL_DATE\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> sink1"
+		}
+	}
+}

@@ -1,0 +1,64 @@
+{
+	"name": "ArchFileLocation",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "TotalevchargeBlobStorage",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "Azure Blob"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": {
+					"value": "@{CONCAT('Location',pipeline().RunId, '.csv')}",
+					"type": "Expression"
+				},
+				"folderPath": "location",
+				"container": "archivefiles"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "location_pk",
+				"type": "String"
+			},
+			{
+				"name": "name",
+				"type": "String"
+			},
+			{
+				"name": "cpo_fk",
+				"type": "String"
+			},
+			{
+				"name": "city",
+				"type": "String"
+			},
+			{
+				"name": "country_id",
+				"type": "String"
+			},
+			{
+				"name": "zip_code",
+				"type": "String"
+			},
+			{
+				"name": "latitude",
+				"type": "String"
+			},
+			{
+				"name": "longitude",
+				"type": "String"
+			}
+		]
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

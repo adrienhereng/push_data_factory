@@ -1,0 +1,31 @@
+{
+	"name": "ArchSrcFileCpo",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "TotalevchargeBlobStorage",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "Azure Blob"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": {
+					"value": "@{CONCAT('CPO',pipeline().RunId, '.csv')}",
+					"type": "Expression"
+				},
+				"folderPath": "cpo",
+				"container": "archivefiles"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": []
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

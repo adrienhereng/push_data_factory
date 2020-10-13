@@ -1,0 +1,74 @@
+{
+	"name": "DWH1_LOCATION",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "TotalevchargeAzSqlDatabase",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "Azure SQL DB"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "LOCATION_PK",
+				"type": "nvarchar"
+			},
+			{
+				"name": "NAME",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CPO_FK",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CITY",
+				"type": "nvarchar"
+			},
+			{
+				"name": "COUNTRY_ID",
+				"type": "nvarchar"
+			},
+			{
+				"name": "ZIP_CODE",
+				"type": "nvarchar"
+			},
+			{
+				"name": "LATITUDE",
+				"type": "float",
+				"precision": 15
+			},
+			{
+				"name": "LONGITUDE",
+				"type": "float",
+				"precision": 15
+			},
+			{
+				"name": "TECHNICAL_DATE",
+				"type": "date"
+			},
+			{
+				"name": "FUNCTIONAL_DATE",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "Id",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "ACTIVE",
+				"type": "int",
+				"precision": 10
+			}
+		],
+		"typeProperties": {
+			"schema": "DWH1",
+			"table": "LOCATION"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

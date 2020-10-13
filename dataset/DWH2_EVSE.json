@@ -1,0 +1,68 @@
+{
+	"name": "DWH2_EVSE",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "TotalevchargeAzSqlDatabase",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "Azure SQL DB"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "EVSE_PK",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CHARGING_STATION_FK",
+				"type": "nvarchar"
+			},
+			{
+				"name": "NAME",
+				"type": "nvarchar"
+			},
+			{
+				"name": "RETIRED_DATE",
+				"type": "date"
+			},
+			{
+				"name": "SERVICE_STATUS",
+				"type": "nvarchar"
+			},
+			{
+				"name": "IN_SERVICE_DATE",
+				"type": "date"
+			},
+			{
+				"name": "MAX_POWER",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "TECHNICAL_DATE",
+				"type": "date"
+			},
+			{
+				"name": "FUNCTIONAL_DATE",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "Id",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "CLOSING_DATE",
+				"type": "date"
+			}
+		],
+		"typeProperties": {
+			"schema": "DWH2",
+			"table": "EVSE"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

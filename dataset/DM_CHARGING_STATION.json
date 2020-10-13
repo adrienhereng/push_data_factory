@@ -1,0 +1,49 @@
+{
+	"name": "DM_CHARGING_STATION",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "TotalevchargeAzSqlDatabase",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "Azure SQL DB"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "CHARGING_STATION_PK",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CLOSING_DATE",
+				"type": "date"
+			},
+			{
+				"name": "ID_LOCATION",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "ID_MODEL",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "Id",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "FUNCTIONAL_DATE",
+				"type": "int",
+				"precision": 10
+			}
+		],
+		"typeProperties": {
+			"schema": "DM",
+			"table": "DIM_CHARGING_STATION"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

@@ -1,0 +1,69 @@
+{
+	"name": "SrcFileCpo",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "TotalevchargeBlobStorage",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"FileName": {
+				"type": "string"
+			}
+		},
+		"folder": {
+			"name": "Azure Blob"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": {
+					"value": "@dataset().FileName",
+					"type": "Expression"
+				},
+				"folderPath": "cpo",
+				"container": "inputfiles"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "cpo_pk",
+				"type": "String"
+			},
+			{
+				"name": "name",
+				"type": "String"
+			},
+			{
+				"name": "cpo_group_fk",
+				"type": "String"
+			},
+			{
+				"name": "business_activity",
+				"type": "String"
+			},
+			{
+				"name": "service_status",
+				"type": "String"
+			},
+			{
+				"name": "creation_date",
+				"type": "String"
+			},
+			{
+				"name": "in_service_date",
+				"type": "String"
+			},
+			{
+				"name": "retired_date",
+				"type": "String"
+			}
+		]
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

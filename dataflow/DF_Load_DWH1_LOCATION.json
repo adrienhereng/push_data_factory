@@ -1,0 +1,45 @@
+{
+	"name": "DF_Load_DWH1_LOCATION",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "STG_LOCATION",
+						"type": "DatasetReference"
+					},
+					"name": "STGcharginSTATION"
+				},
+				{
+					"dataset": {
+						"referenceName": "DWH1_LOCATION",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DWH1_LOCATION",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "DerivedColumn1"
+				},
+				{
+					"name": "Join1"
+				},
+				{
+					"name": "AlterRow1"
+				}
+			],
+			"script": "source(output(\n\t\tLOCATION_PK as string,\n\t\tNAME as string,\n\t\tCPO_FK as string,\n\t\tCITY as string,\n\t\tCOUNTRY_ID as string,\n\t\tZIP_CODE as string,\n\t\tLATITUDE as double,\n\t\tLONGITUDE as double,\n\t\tTECHNICAL_DATE as string,\n\t\tFUNCTIONAL_DATE as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> STGcharginSTATION\nsource(output(\n\t\tLOCATION_PK as string,\n\t\tNAME as string,\n\t\tCPO_FK as string,\n\t\tCITY as string,\n\t\tCOUNTRY_ID as string,\n\t\tZIP_CODE as string,\n\t\tLATITUDE as double,\n\t\tLONGITUDE as double,\n\t\tTECHNICAL_DATE as date,\n\t\tFUNCTIONAL_DATE as integer,\n\t\tId as integer,\n\t\tACTIVE as integer\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> source1\nSTGcharginSTATION derive(FUNCTIONAL_DATE = toInteger(left(FUNCTIONAL_DATE,8)),\n\t\tTECHNICAL_DATE = toDate(left(TECHNICAL_DATE,10),'MM/dd/yyyy'),\n\t\tFLAG = 0) ~> DerivedColumn1\nDerivedColumn1, source1 join(STGcharginSTATION@LOCATION_PK == source1@LOCATION_PK\n\t&& DerivedColumn1@TECHNICAL_DATE == source1@TECHNICAL_DATE,\n\tjoinType:'left',\n\tbroadcast: 'auto')~> Join1\nJoin1 alterRow(updateIf(equals(STGcharginSTATION@LOCATION_PK, source1@LOCATION_PK) && equals(DerivedColumn1@TECHNICAL_DATE, source1@TECHNICAL_DATE))) ~> AlterRow1\nAlterRow1 sink(input(\n\t\tLOCATION_PK as string,\n\t\tNAME as string,\n\t\tCPO_FK as string,\n\t\tCITY as string,\n\t\tCOUNTRY_ID as string,\n\t\tZIP_CODE as string,\n\t\tLATITUDE as double,\n\t\tLONGITUDE as double,\n\t\tTECHNICAL_DATE as date,\n\t\tFUNCTIONAL_DATE as integer,\n\t\tId as integer,\n\t\tACTIVE as integer\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:true,\n\tupsertable:false,\n\tkeys:['LOCATION_PK','TECHNICAL_DATE'],\n\tformat: 'table',\n\tpostSQLs:['update [DWH1].[LOCATION] Set ACTIVE=0;\\n\\nupdate [DWH1].[LOCATION] Set ACTIVE=1 \\nwhere TECHNICAL_DATE = (SELECT MAX(TECHNICAL_DATE)\\nFROM [DWH1].[LOCATION]);'],\n\tmapColumn(\n\t\tNAME = STGcharginSTATION@NAME,\n\t\tCPO_FK = STGcharginSTATION@CPO_FK,\n\t\tCITY = STGcharginSTATION@CITY,\n\t\tCOUNTRY_ID = STGcharginSTATION@COUNTRY_ID,\n\t\tZIP_CODE = STGcharginSTATION@ZIP_CODE,\n\t\tLATITUDE = STGcharginSTATION@LATITUDE,\n\t\tLONGITUDE = STGcharginSTATION@LONGITUDE,\n\t\tTECHNICAL_DATE = DerivedColumn1@TECHNICAL_DATE,\n\t\tFUNCTIONAL_DATE = DerivedColumn1@FUNCTIONAL_DATE,\n\t\tACTIVE,\n\t\tLOCATION_PK = STGcharginSTATION@LOCATION_PK\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> sink1"
+		}
+	}
+}

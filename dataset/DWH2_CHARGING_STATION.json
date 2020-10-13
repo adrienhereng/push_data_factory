@@ -1,0 +1,51 @@
+{
+	"name": "DWH2_CHARGING_STATION",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "TotalevchargeAzSqlDatabase",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "Azure SQL DB"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "CHARGING_STATION_PK",
+				"type": "nvarchar"
+			},
+			{
+				"name": "LOCATION_FK",
+				"type": "nvarchar"
+			},
+			{
+				"name": "MODEL_FK",
+				"type": "nvarchar"
+			},
+			{
+				"name": "FUNCTIONAL_DATE",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "TECHNICAL_DATE",
+				"type": "date"
+			},
+			{
+				"name": "Id",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "CLOSING_DATE",
+				"type": "date"
+			}
+		],
+		"typeProperties": {
+			"schema": "DWH2",
+			"table": "CHARGING_STATION"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

@@ -1,0 +1,33 @@
+{
+	"name": "STG_CPO_GROUP",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "TotalevchargeAzSqlDatabase",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "Azure SQL DB"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "CPO_GROUP_PK",
+				"type": "nvarchar"
+			},
+			{
+				"name": "TECHNICAL_DATE",
+				"type": "nvarchar"
+			},
+			{
+				"name": "FUNCTIONAL_DATE",
+				"type": "nvarchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "STG",
+			"table": "CPO_GROUP"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

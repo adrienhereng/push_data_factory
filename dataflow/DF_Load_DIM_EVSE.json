@@ -1,0 +1,39 @@
+{
+	"name": "DF_Load_DIM_EVSE",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DWH2_EVSE",
+						"type": "DatasetReference"
+					},
+					"name": "DWH2EVSE"
+				},
+				{
+					"dataset": {
+						"referenceName": "DM_CHARGING_STATION",
+						"type": "DatasetReference"
+					},
+					"name": "DMChargigStation"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DM_EVSE",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "Join2"
+				}
+			],
+			"script": "source(output(\n\t\tEVSE_PK as string,\n\t\tCHARGING_STATION_FK as string,\n\t\tNAME as string,\n\t\tRETIRED_DATE as date,\n\t\tSERVICE_STATUS as string,\n\t\tIN_SERVICE_DATE as date,\n\t\tMAX_POWER as integer,\n\t\tTECHNICAL_DATE as date,\n\t\tFUNCTIONAL_DATE as integer,\n\t\tId as integer,\n\t\tCLOSING_DATE as date\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tquery: 'SELECT *\\n  FROM [DWH2].[EVSE] where CLOSING_DATE= (select max(CLOSING_DATE) from [DWH2].[EVSE] )',\n\tformat: 'query') ~> DWH2EVSE\nsource(output(\n\t\tCHARGING_STATION_PK as string,\n\t\tCLOSING_DATE as date,\n\t\tID_LOCATION as integer,\n\t\tID_MODEL as integer,\n\t\tId as integer,\n\t\tFUNCTIONAL_DATE as integer\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> DMChargigStation\nDWH2EVSE, DMChargigStation join(DWH2EVSE@CLOSING_DATE == DMChargigStation@CLOSING_DATE\n\t&& CHARGING_STATION_FK == CHARGING_STATION_PK,\n\tjoinType:'left',\n\tbroadcast: 'auto')~> Join2\nJoin2 sink(input(\n\t\tEVSE_PK as string,\n\t\tNAME as string,\n\t\tRETIRED_DATE as date,\n\t\tSERVICE_STATUS as string,\n\t\tIN_SERVICE_DATE as date,\n\t\tMAX_POWER as integer,\n\t\tCLOSING_DATE as date,\n\t\tID_CHARGING_STATION as integer,\n\t\tId as integer,\n\t\tFUNCTIONAL_DATE as integer\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tpreSQLs:['truncate table [DM].[DIM_EVSE]'],\n\tmapColumn(\n\t\tEVSE_PK,\n\t\tNAME,\n\t\tRETIRED_DATE,\n\t\tSERVICE_STATUS,\n\t\tIN_SERVICE_DATE,\n\t\tMAX_POWER,\n\t\tCLOSING_DATE = DWH2EVSE@CLOSING_DATE,\n\t\tID_CHARGING_STATION = DMChargigStation@Id,\n\t\tFUNCTIONAL_DATE = DWH2EVSE@FUNCTIONAL_DATE\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> sink1"
+		}
+	}
+}

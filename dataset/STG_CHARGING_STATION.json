@@ -1,0 +1,41 @@
+{
+	"name": "STG_CHARGING_STATION",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "TotalevchargeAzSqlDatabase",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "Azure SQL DB"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "CHARGING_STATION_PK",
+				"type": "nvarchar"
+			},
+			{
+				"name": "LOCATION_FK",
+				"type": "nvarchar"
+			},
+			{
+				"name": "MODEL_FK",
+				"type": "nvarchar"
+			},
+			{
+				"name": "FUNCTIONAL_DATE",
+				"type": "nvarchar"
+			},
+			{
+				"name": "TECHNICAL_DATE",
+				"type": "nvarchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "STG",
+			"table": "CHARGING_STATION"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

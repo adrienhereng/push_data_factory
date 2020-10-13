@@ -1,0 +1,176 @@
+{
+	"name": "load_DWH1_CHARGING_STATION",
+	"properties": {
+		"activities": [
+			{
+				"name": "Load data from Blob to DB",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "DelimitedTextSource",
+						"additionalColumns": [
+							{
+								"name": "FilePath",
+								"value": {
+									"value": "$$FILEPATH",
+									"type": "Expression"
+								}
+							},
+							{
+								"name": "Today",
+								"value": {
+									"value": "@{utcnow()}",
+									"type": "Expression"
+								}
+							}
+						],
+						"storeSettings": {
+							"type": "AzureBlobStorageReadSettings",
+							"recursive": false,
+							"enablePartitionDiscovery": false
+						},
+						"formatSettings": {
+							"type": "DelimitedTextReadSettings"
+						}
+					},
+					"sink": {
+						"type": "AzureSqlSink",
+						"preCopyScript": "IF OBJECT_ID('[STG].[CHARGING_STATION]')  IS NOT NULL TRUNCATE TABLE [STG].[CHARGING_STATION]",
+						"disableMetricsCollection": false
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"name": "charging_station_pk",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "CHARGING_STATION_PK",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "location_fk",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "LOCATION_FK",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "model_fk",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "MODEL_FK",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "FilePath",
+									"type": "String"
+								},
+								"sink": {
+									"name": "FUNCTIONAL_DATE",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "Today",
+									"type": "String"
+								},
+								"sink": {
+									"name": "TECHNICAL_DATE",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							}
+						],
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "SrcFileChargingStation",
+						"type": "DatasetReference",
+						"parameters": {
+							"FileName": "@pipeline().parameters.SourceFile"
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "STG_CHARGING_STATION",
+						"type": "DatasetReference"
+					}
+				]
+			},
+			{
+				"name": "STgToDWH1_EVSE",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [
+					{
+						"activity": "Load data from Blob to DB",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "DF_Load_DWH1_Charging_station",
+						"type": "DataFlowReference"
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					}
+				}
+			}
+		],
+		"parameters": {
+			"SourceFile": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"lastPublishTime": "2020-08-19T08:37:28Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

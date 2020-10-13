@@ -1,0 +1,88 @@
+{
+	"name": "ArchFileTransactions",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "TotalevchargeBlobStorage",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "Azure Blob"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": {
+					"value": "@{CONCAT('Transactions',pipeline().RunId, '.csv')}",
+					"type": "Expression"
+				},
+				"folderPath": "transaction",
+				"container": "archivefiles"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "evse_id",
+				"type": "String"
+			},
+			{
+				"name": "token_id",
+				"type": "String"
+			},
+			{
+				"name": "auth_method",
+				"type": "String"
+			},
+			{
+				"name": "emsp",
+				"type": "String"
+			},
+			{
+				"name": "session_start_date",
+				"type": "String"
+			},
+			{
+				"name": "session_stop_date",
+				"type": "String"
+			},
+			{
+				"name": "connector_type",
+				"type": "String"
+			},
+			{
+				"name": "consumed_energy",
+				"type": "String"
+			},
+			{
+				"name": "session_duration",
+				"type": "String"
+			},
+			{
+				"name": "max_power",
+				"type": "String"
+			},
+			{
+				"name": "compliance",
+				"type": "String"
+			},
+			{
+				"name": "taxed_price",
+				"type": "String"
+			},
+			{
+				"name": "non_taxed_price",
+				"type": "String"
+			},
+			{
+				"name": "currency",
+				"type": "String"
+			}
+		]
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

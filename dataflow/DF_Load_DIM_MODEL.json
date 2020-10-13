@@ -1,0 +1,28 @@
+{
+	"name": "DF_Load_DIM_MODEL",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DWH2_EVSE_MODEL",
+						"type": "DatasetReference"
+					},
+					"name": "DWH2Model"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DM_EVSE_MODEL",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [],
+			"script": "source(output(\n\t\tMODEL_PK as string,\n\t\tNAME as string,\n\t\tDESCRIPTION as string,\n\t\tMANUFACTURER as string,\n\t\tTECHNICAL_DATE as date,\n\t\tFUNCTIONAL_DATE as integer,\n\t\tId as integer,\n\t\tCLOSING_DATE as date\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tquery: 'SELECT *\\n  FROM [DWH2].[EVSE_MODEL] where CLOSING_DATE= (select max(CLOSING_DATE) from [DWH2].[EVSE_MODEL] )',\n\tformat: 'query') ~> DWH2Model\nDWH2Model sink(input(\n\t\tMODEL_PK as string,\n\t\tNAME as string,\n\t\tDESCRIPTION as string,\n\t\tMANUFACTURER as string,\n\t\tCLOSING_DATE as date,\n\t\tId as integer,\n\t\tFUNCTIONAL_DATE as integer\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tpreSQLs:['truncate table [DM].[DIM_EVSE_MODEL]'],\n\tmapColumn(\n\t\tMODEL_PK,\n\t\tNAME,\n\t\tDESCRIPTION,\n\t\tMANUFACTURER,\n\t\tCLOSING_DATE,\n\t\tFUNCTIONAL_DATE\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> sink1"
+		}
+	}
+}

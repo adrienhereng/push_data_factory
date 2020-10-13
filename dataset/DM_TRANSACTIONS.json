@@ -1,0 +1,102 @@
+{
+	"name": "DM_TRANSACTIONS",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "TotalevchargeAzSqlDatabase",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "Azure SQL DB"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "TOKEN_ID",
+				"type": "nvarchar"
+			},
+			{
+				"name": "AUTH_METHOD",
+				"type": "nvarchar"
+			},
+			{
+				"name": "EMSP",
+				"type": "nvarchar"
+			},
+			{
+				"name": "SESSION_START_DATE",
+				"type": "date"
+			},
+			{
+				"name": "SESSION_STOP_DATE",
+				"type": "date"
+			},
+			{
+				"name": "CONNECTOR_TYPE",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CONSUMED_ENERGY",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "SESSION_DURATION",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "MAX_POWER",
+				"type": "float",
+				"precision": 15
+			},
+			{
+				"name": "COMPLIANCE",
+				"type": "bit"
+			},
+			{
+				"name": "TAXED_PRICE",
+				"type": "float",
+				"precision": 15
+			},
+			{
+				"name": "NON_TAXED_PRICE",
+				"type": "float",
+				"precision": 15
+			},
+			{
+				"name": "CURRENCY",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CLOSING_DATE",
+				"type": "date"
+			},
+			{
+				"name": "ID_EVSE",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "ID_Date",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "Id",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "FUNCTIONAL_DATE",
+				"type": "int",
+				"precision": 10
+			}
+		],
+		"typeProperties": {
+			"schema": "DM",
+			"table": "FACT_TRANSACTIONS"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

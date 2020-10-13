@@ -1,0 +1,227 @@
+{
+	"name": "load_DWH1_EVSE",
+	"properties": {
+		"activities": [
+			{
+				"name": "Load data from Blob to DB",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "DelimitedTextSource",
+						"additionalColumns": [
+							{
+								"name": "FilePath",
+								"value": {
+									"value": "$$FILEPATH",
+									"type": "Expression"
+								}
+							},
+							{
+								"name": "Today",
+								"value": {
+									"value": "@{utcnow()}",
+									"type": "Expression"
+								}
+							}
+						],
+						"storeSettings": {
+							"type": "AzureBlobStorageReadSettings",
+							"recursive": false,
+							"enablePartitionDiscovery": false
+						},
+						"formatSettings": {
+							"type": "DelimitedTextReadSettings"
+						}
+					},
+					"sink": {
+						"type": "AzureSqlSink",
+						"preCopyScript": "IF OBJECT_ID('[STG].[EVSE]')  IS NOT NULL TRUNCATE TABLE [STG].[EVSE]",
+						"disableMetricsCollection": false
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"name": "evse_pk",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "EVSE_PK",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "charging_station_fk",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "CHARGING_STATION_FK",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "name",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "NAME",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "retired_date",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "RETIRED_DATE",
+									"type": "DateTime",
+									"physicalType": "date"
+								}
+							},
+							{
+								"source": {
+									"name": "service_status",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "SERVICE_STATUS",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "in_service_date",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "IN_SERVICE_DATE",
+									"type": "DateTime",
+									"physicalType": "date"
+								}
+							},
+							{
+								"source": {
+									"name": "max_power",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "MAX_POWER",
+									"type": "Int32",
+									"physicalType": "int"
+								}
+							},
+							{
+								"source": {
+									"name": "Today",
+									"type": "String"
+								},
+								"sink": {
+									"name": "TECHNICAL_DATE",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "FilePath",
+									"type": "String"
+								},
+								"sink": {
+									"name": "FUNCTIONAL_DATE",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							}
+						],
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "SrcFileEvse",
+						"type": "DatasetReference",
+						"parameters": {
+							"FileName": {
+								"value": "@pipeline().parameters.SourceFile",
+								"type": "Expression"
+							}
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "STG_EVSE",
+						"type": "DatasetReference"
+					}
+				]
+			},
+			{
+				"name": "STgToDWH1_EVSE",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [
+					{
+						"activity": "Load data from Blob to DB",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "DF_Load_DWH1_EVSE",
+						"type": "DataFlowReference"
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					}
+				}
+			}
+		],
+		"parameters": {
+			"SourceFile": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"lastPublishTime": "2020-08-19T08:37:28Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

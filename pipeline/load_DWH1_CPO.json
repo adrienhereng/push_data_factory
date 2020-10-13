@@ -1,0 +1,236 @@
+{
+	"name": "load_DWH1_CPO",
+	"properties": {
+		"activities": [
+			{
+				"name": "Load data from Blob to DB",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "DelimitedTextSource",
+						"additionalColumns": [
+							{
+								"name": "FilePath",
+								"value": {
+									"value": "$$FILEPATH",
+									"type": "Expression"
+								}
+							},
+							{
+								"name": "Today",
+								"value": {
+									"value": "@{utcnow()}",
+									"type": "Expression"
+								}
+							}
+						],
+						"storeSettings": {
+							"type": "AzureBlobStorageReadSettings",
+							"recursive": false,
+							"enablePartitionDiscovery": false
+						},
+						"formatSettings": {
+							"type": "DelimitedTextReadSettings"
+						}
+					},
+					"sink": {
+						"type": "AzureSqlSink",
+						"preCopyScript": "IF OBJECT_ID('[STG].[CPO]')  IS NOT NULL TRUNCATE TABLE [STG].[CPO]",
+						"disableMetricsCollection": false
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"name": "cpo_pk",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "CPO_PK",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "name",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "NAME",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "cpo_group_fk",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "CPO_GROUP_FK",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "business_activity",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "BUSINESS_ACTIVITY",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "service_status",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "SERVICE_STATUS",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "creation_date",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "CREATION_DATE",
+									"type": "DateTime",
+									"physicalType": "date"
+								}
+							},
+							{
+								"source": {
+									"name": "in_service_date",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "IN_SERVICE_DATE",
+									"type": "DateTime",
+									"physicalType": "date"
+								}
+							},
+							{
+								"source": {
+									"name": "retired_date",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "RETIRED_DATE",
+									"type": "DateTime",
+									"physicalType": "date"
+								}
+							},
+							{
+								"source": {
+									"name": "FilePath",
+									"type": "String"
+								},
+								"sink": {
+									"name": "FUNCTIONAL_DATE",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "Today",
+									"type": "String"
+								},
+								"sink": {
+									"name": "TECHNICAL_DATE",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							}
+						],
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "SrcFileCpo",
+						"type": "DatasetReference",
+						"parameters": {
+							"FileName": "@pipeline().parameters.SourceFile"
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "STG_CPO",
+						"type": "DatasetReference"
+					}
+				]
+			},
+			{
+				"name": "STgToDWH1_EVSE",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [
+					{
+						"activity": "Load data from Blob to DB",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "DF_Load_DWH1_CPO",
+						"type": "DataFlowReference"
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					}
+				}
+			}
+		],
+		"parameters": {
+			"SourceFile": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"lastPublishTime": "2020-08-19T08:37:28Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

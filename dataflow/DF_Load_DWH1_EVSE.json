@@ -1,0 +1,45 @@
+{
+	"name": "DF_Load_DWH1_EVSE",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "STG_EVSE",
+						"type": "DatasetReference"
+					},
+					"name": "STGcharginSTATION"
+				},
+				{
+					"dataset": {
+						"referenceName": "DWH1_EVSE",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DWH1_EVSE",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "DerivedColumn1"
+				},
+				{
+					"name": "Join1"
+				},
+				{
+					"name": "AlterRow1"
+				}
+			],
+			"script": "source(output(\n\t\tEVSE_PK as string,\n\t\tCHARGING_STATION_FK as string,\n\t\tNAME as string,\n\t\tRETIRED_DATE as date,\n\t\tSERVICE_STATUS as string,\n\t\tIN_SERVICE_DATE as date,\n\t\tMAX_POWER as integer,\n\t\tTECHNICAL_DATE as string,\n\t\tFUNCTIONAL_DATE as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> STGcharginSTATION\nsource(output(\n\t\tEVSE_PK as string,\n\t\tCHARGING_STATION_FK as string,\n\t\tNAME as string,\n\t\tRETIRED_DATE as date,\n\t\tSERVICE_STATUS as string,\n\t\tIN_SERVICE_DATE as date,\n\t\tMAX_POWER as integer,\n\t\tTECHNICAL_DATE as date,\n\t\tFUNCTIONAL_DATE as integer,\n\t\tId as integer,\n\t\tACTIVE as integer\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> source1\nSTGcharginSTATION derive(FUNCTIONAL_DATE = toInteger(left(FUNCTIONAL_DATE,8)),\n\t\tTECHNICAL_DATE = toDate(left(TECHNICAL_DATE,10),'MM/dd/yyyy'),\n\t\tFLAG = 0) ~> DerivedColumn1\nDerivedColumn1, source1 join(STGcharginSTATION@EVSE_PK == source1@EVSE_PK\n\t&& DerivedColumn1@TECHNICAL_DATE == source1@TECHNICAL_DATE,\n\tjoinType:'left',\n\tbroadcast: 'auto')~> Join1\nJoin1 alterRow(updateIf(equals(STGcharginSTATION@EVSE_PK, source1@EVSE_PK) && equals(DerivedColumn1@TECHNICAL_DATE, source1@TECHNICAL_DATE))) ~> AlterRow1\nAlterRow1 sink(input(\n\t\tEVSE_PK as string,\n\t\tCHARGING_STATION_FK as string,\n\t\tNAME as string,\n\t\tRETIRED_DATE as date,\n\t\tSERVICE_STATUS as string,\n\t\tIN_SERVICE_DATE as date,\n\t\tMAX_POWER as integer,\n\t\tTECHNICAL_DATE as date,\n\t\tFUNCTIONAL_DATE as integer,\n\t\tId as integer,\n\t\tACTIVE as integer\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:true,\n\tupsertable:false,\n\tkeys:['EVSE_PK','TECHNICAL_DATE'],\n\tformat: 'table',\n\tpostSQLs:['update [DWH1].EVSE Set ACTIVE=0;\\n\\nupdate [DWH1].EVSE Set ACTIVE=1\\nwhere TECHNICAL_DATE = (SELECT MAX(TECHNICAL_DATE)\\nFROM [DWH1].EVSE);'],\n\tmapColumn(\n\t\tEVSE_PK = STGcharginSTATION@EVSE_PK,\n\t\tCHARGING_STATION_FK = STGcharginSTATION@CHARGING_STATION_FK,\n\t\tNAME = STGcharginSTATION@NAME,\n\t\tRETIRED_DATE = STGcharginSTATION@RETIRED_DATE,\n\t\tSERVICE_STATUS = STGcharginSTATION@SERVICE_STATUS,\n\t\tIN_SERVICE_DATE = STGcharginSTATION@IN_SERVICE_DATE,\n\t\tMAX_POWER = STGcharginSTATION@MAX_POWER,\n\t\tTECHNICAL_DATE = DerivedColumn1@TECHNICAL_DATE,\n\t\tFUNCTIONAL_DATE = DerivedColumn1@FUNCTIONAL_DATE,\n\t\tACTIVE\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> sink1"
+		}
+	}
+}

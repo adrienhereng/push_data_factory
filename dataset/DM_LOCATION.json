@@ -1,0 +1,70 @@
+{
+	"name": "DM_LOCATION",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "TotalevchargeAzSqlDatabase",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "Azure SQL DB"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "LOCATION_PK",
+				"type": "nvarchar"
+			},
+			{
+				"name": "NAME",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CITY",
+				"type": "nvarchar"
+			},
+			{
+				"name": "COUNTRY_ID",
+				"type": "nvarchar"
+			},
+			{
+				"name": "ZIP_CODE",
+				"type": "nvarchar"
+			},
+			{
+				"name": "LATITUDE",
+				"type": "float",
+				"precision": 15
+			},
+			{
+				"name": "LONGITUDE",
+				"type": "float",
+				"precision": 15
+			},
+			{
+				"name": "CLOSING_DATE",
+				"type": "date"
+			},
+			{
+				"name": "ID_CPO",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "Id",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "FUNCTIONAL_DATE",
+				"type": "int",
+				"precision": 10
+			}
+		],
+		"typeProperties": {
+			"schema": "DM",
+			"table": "DIM_LOCATION"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

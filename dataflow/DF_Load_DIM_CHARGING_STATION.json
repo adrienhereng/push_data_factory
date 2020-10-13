@@ -1,0 +1,49 @@
+{
+	"name": "DF_Load_DIM_CHARGING_STATION",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DWH2_CHARGING_STATION",
+						"type": "DatasetReference"
+					},
+					"name": "DWH2ChargingStation"
+				},
+				{
+					"dataset": {
+						"referenceName": "DM_EVSE_MODEL",
+						"type": "DatasetReference"
+					},
+					"name": "DMEvseModel"
+				},
+				{
+					"dataset": {
+						"referenceName": "DM_LOCATION",
+						"type": "DatasetReference"
+					},
+					"name": "DMLocation"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DM_CHARGING_STATION",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "Join1"
+				},
+				{
+					"name": "Join2"
+				}
+			],
+			"script": "source(output(\n\t\tCHARGING_STATION_PK as string,\n\t\tLOCATION_FK as string,\n\t\tMODEL_FK as string,\n\t\tFUNCTIONAL_DATE as integer,\n\t\tTECHNICAL_DATE as date,\n\t\tId as integer,\n\t\tCLOSING_DATE as date\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tquery: 'SELECT *\\n  FROM [DWH2].[CHARGING_STATION] where CLOSING_DATE= (select max(CLOSING_DATE) from [DWH2].[CHARGING_STATION] )',\n\tformat: 'query') ~> DWH2ChargingStation\nsource(output(\n\t\tMODEL_PK as string,\n\t\tNAME as string,\n\t\tDESCRIPTION as string,\n\t\tMANUFACTURER as string,\n\t\tCLOSING_DATE as date,\n\t\tId as integer,\n\t\tFUNCTIONAL_DATE as integer\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> DMEvseModel\nsource(output(\n\t\tLOCATION_PK as string,\n\t\tNAME as string,\n\t\tCITY as string,\n\t\tCOUNTRY_ID as string,\n\t\tZIP_CODE as string,\n\t\tLATITUDE as double,\n\t\tLONGITUDE as double,\n\t\tCLOSING_DATE as date,\n\t\tID_CPO as integer,\n\t\tId as integer,\n\t\tFUNCTIONAL_DATE as integer\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> DMLocation\nDWH2ChargingStation, DMLocation join(LOCATION_FK == LOCATION_PK\n\t&& DWH2ChargingStation@CLOSING_DATE == DMLocation@CLOSING_DATE,\n\tjoinType:'left',\n\tbroadcast: 'auto')~> Join1\nJoin1, DMEvseModel join(MODEL_FK == MODEL_PK\n\t&& DWH2ChargingStation@CLOSING_DATE == DMEvseModel@CLOSING_DATE,\n\tjoinType:'left',\n\tbroadcast: 'auto')~> Join2\nJoin2 sink(input(\n\t\tCHARGING_STATION_PK as string,\n\t\tCLOSING_DATE as date,\n\t\tID_LOCATION as integer,\n\t\tID_MODEL as integer,\n\t\tId as integer,\n\t\tFUNCTIONAL_DATE as integer\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tpreSQLs:['truncate table [DM].[DIM_CHARGING_STATION]'],\n\tmapColumn(\n\t\tCHARGING_STATION_PK,\n\t\tCLOSING_DATE = DWH2ChargingStation@CLOSING_DATE,\n\t\tID_LOCATION = DMLocation@Id,\n\t\tID_MODEL = DMEvseModel@Id,\n\t\tFUNCTIONAL_DATE = DWH2ChargingStation@FUNCTIONAL_DATE\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> sink1"
+		}
+	}
+}

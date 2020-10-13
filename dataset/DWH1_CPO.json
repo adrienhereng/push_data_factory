@@ -1,0 +1,72 @@
+{
+	"name": "DWH1_CPO",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "TotalevchargeAzSqlDatabase",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "Azure SQL DB"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "CPO_PK",
+				"type": "nvarchar"
+			},
+			{
+				"name": "NAME",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CPO_GROUP_FK",
+				"type": "nvarchar"
+			},
+			{
+				"name": "BUSINESS_ACTIVITY",
+				"type": "nvarchar"
+			},
+			{
+				"name": "SERVICE_STATUS",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CREATION_DATE",
+				"type": "date"
+			},
+			{
+				"name": "IN_SERVICE_DATE",
+				"type": "date"
+			},
+			{
+				"name": "RETIRED_DATE",
+				"type": "date"
+			},
+			{
+				"name": "FUNCTIONAL_DATE",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "TECHNICAL_DATE",
+				"type": "date"
+			},
+			{
+				"name": "Id",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "ACTIVE",
+				"type": "int",
+				"precision": 10
+			}
+		],
+		"typeProperties": {
+			"schema": "DWH1",
+			"table": "CPO"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

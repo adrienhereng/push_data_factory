@@ -1,0 +1,39 @@
+{
+	"name": "DF_Load_DIM_CPO",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DWH2_CPO",
+						"type": "DatasetReference"
+					},
+					"name": "DWH2CPO"
+				},
+				{
+					"dataset": {
+						"referenceName": "DWH2_CPO_GROUP",
+						"type": "DatasetReference"
+					},
+					"name": "DWH2CPgroupe"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DM_CPO",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "Join1"
+				}
+			],
+			"script": "source(output(\n\t\tCPO_PK as string,\n\t\tNAME as string,\n\t\tCPO_GROUP_FK as string,\n\t\tBUSINESS_ACTIVITY as string,\n\t\tSERVICE_STATUS as string,\n\t\tCREATION_DATE as date,\n\t\tIN_SERVICE_DATE as date,\n\t\tRETIRED_DATE as date,\n\t\tFUNCTIONAL_DATE as integer,\n\t\tTECHNICAL_DATE as date,\n\t\tId as integer,\n\t\tCLOSING_DATE as date\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tquery: 'SELECT *\\n  FROM [DWH2].[CPO] where CLOSING_DATE= (select max(CLOSING_DATE) from [DWH2].[CPO])',\n\tformat: 'query') ~> DWH2CPO\nsource(output(\n\t\tCPO_GROUP_PK as string,\n\t\tTECHNICAL_DATE as date,\n\t\tFUNCTIONAL_DATE as integer,\n\t\tId as integer,\n\t\tCLOSING_DATE as date\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tquery: 'SELECT *\\n  FROM [DWH2].[CPO_GROUP] where CLOSING_DATE= (select max(CLOSING_DATE) from [DWH2].[CPO_GROUP])',\n\tformat: 'query') ~> DWH2CPgroupe\nDWH2CPO, DWH2CPgroupe join(CPO_GROUP_FK == CPO_GROUP_PK\n\t&& DWH2CPO@CLOSING_DATE == DWH2CPgroupe@CLOSING_DATE,\n\tjoinType:'left',\n\tbroadcast: 'auto')~> Join1\nJoin1 sink(input(\n\t\tCPO_PK as string,\n\t\tNAME as string,\n\t\tCPO_GROUP_FK as string,\n\t\tBUSINESS_ACTIVITY as string,\n\t\tSERVICE_STATUS as string,\n\t\tCREATION_DATE as date,\n\t\tIN_SERVICE_DATE as date,\n\t\tRETIRED_DATE as date,\n\t\tCPO_GROUP as string,\n\t\tCLOSING_DATE as date,\n\t\tId as integer,\n\t\tFUNCTIONAL_DATE as integer\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tpreSQLs:['truncate table [DM].[DIM_CPO]'],\n\tmapColumn(\n\t\tCPO_PK,\n\t\tNAME,\n\t\tCPO_GROUP_FK,\n\t\tBUSINESS_ACTIVITY,\n\t\tSERVICE_STATUS,\n\t\tCREATION_DATE,\n\t\tIN_SERVICE_DATE,\n\t\tRETIRED_DATE,\n\t\tCPO_GROUP = CPO_GROUP_PK,\n\t\tCLOSING_DATE = DWH2CPO@CLOSING_DATE,\n\t\tFUNCTIONAL_DATE = DWH2CPO@FUNCTIONAL_DATE\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> sink1"
+		}
+	}
+}
