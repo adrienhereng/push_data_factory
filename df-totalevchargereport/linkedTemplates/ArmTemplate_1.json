@@ -1,0 +1,1321 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "df-totalevchargereport"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/DWH1_EVSE')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "TotalevchargeAzSqlDatabase",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Azure SQL DB"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "EVSE_PK",
+						"type": "nvarchar"
+					},
+					{
+						"name": "CHARGING_STATION_FK",
+						"type": "nvarchar"
+					},
+					{
+						"name": "NAME",
+						"type": "nvarchar"
+					},
+					{
+						"name": "RETIRED_DATE",
+						"type": "date"
+					},
+					{
+						"name": "SERVICE_STATUS",
+						"type": "nvarchar"
+					},
+					{
+						"name": "IN_SERVICE_DATE",
+						"type": "date"
+					},
+					{
+						"name": "MAX_POWER",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "TECHNICAL_DATE",
+						"type": "date"
+					},
+					{
+						"name": "FUNCTIONAL_DATE",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "Id",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "ACTIVE",
+						"type": "int",
+						"precision": 10
+					}
+				],
+				"typeProperties": {
+					"schema": "DWH1",
+					"table": "EVSE"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DWH1_EVSE_MODEL')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "TotalevchargeAzSqlDatabase",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Azure SQL DB"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "MODEL_PK",
+						"type": "nvarchar"
+					},
+					{
+						"name": "NAME",
+						"type": "nvarchar"
+					},
+					{
+						"name": "DESCRIPTION",
+						"type": "nvarchar"
+					},
+					{
+						"name": "MANUFACTURER",
+						"type": "nvarchar"
+					},
+					{
+						"name": "TECHNICAL_DATE",
+						"type": "date"
+					},
+					{
+						"name": "FUNCTIONAL_DATE",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "Id",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "ACTIVE",
+						"type": "int",
+						"precision": 10
+					}
+				],
+				"typeProperties": {
+					"schema": "DWH1",
+					"table": "EVSE_MODEL"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DWH1_LOCATION')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "TotalevchargeAzSqlDatabase",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Azure SQL DB"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "LOCATION_PK",
+						"type": "nvarchar"
+					},
+					{
+						"name": "NAME",
+						"type": "nvarchar"
+					},
+					{
+						"name": "CPO_FK",
+						"type": "nvarchar"
+					},
+					{
+						"name": "CITY",
+						"type": "nvarchar"
+					},
+					{
+						"name": "COUNTRY_ID",
+						"type": "nvarchar"
+					},
+					{
+						"name": "ZIP_CODE",
+						"type": "nvarchar"
+					},
+					{
+						"name": "LATITUDE",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "LONGITUDE",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "TECHNICAL_DATE",
+						"type": "date"
+					},
+					{
+						"name": "FUNCTIONAL_DATE",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "Id",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "ACTIVE",
+						"type": "int",
+						"precision": 10
+					}
+				],
+				"typeProperties": {
+					"schema": "DWH1",
+					"table": "LOCATION"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DWH1_TRANSACTIONS')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "TotalevchargeAzSqlDatabase",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Azure SQL DB"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "EVSE_ID",
+						"type": "nvarchar"
+					},
+					{
+						"name": "TOKEN_ID",
+						"type": "nvarchar"
+					},
+					{
+						"name": "AUTH_METHOD",
+						"type": "nvarchar"
+					},
+					{
+						"name": "EMSP",
+						"type": "nvarchar"
+					},
+					{
+						"name": "SESSION_START_DATE",
+						"type": "date"
+					},
+					{
+						"name": "SESSION_STOP_DATE",
+						"type": "date"
+					},
+					{
+						"name": "CONNECTOR_TYPE",
+						"type": "nvarchar"
+					},
+					{
+						"name": "CONSUMED_ENERGY",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "SESSION_DURATION",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "MAX_POWER",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "COMPLIANCE",
+						"type": "bit"
+					},
+					{
+						"name": "TAXED_PRICE",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "NON_TAXED_PRICE",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "CURRENCY",
+						"type": "nvarchar"
+					},
+					{
+						"name": "TECHNICAL_DATE",
+						"type": "date"
+					},
+					{
+						"name": "FUNCTIONAL_DATE",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "Id",
+						"type": "int",
+						"precision": 10
+					}
+				],
+				"typeProperties": {
+					"schema": "DWH1",
+					"table": "TRANSACTIONS"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DWH2_CHARGING_STATION')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "TotalevchargeAzSqlDatabase",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Azure SQL DB"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "CHARGING_STATION_PK",
+						"type": "nvarchar"
+					},
+					{
+						"name": "LOCATION_FK",
+						"type": "nvarchar"
+					},
+					{
+						"name": "MODEL_FK",
+						"type": "nvarchar"
+					},
+					{
+						"name": "FUNCTIONAL_DATE",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "TECHNICAL_DATE",
+						"type": "date"
+					},
+					{
+						"name": "Id",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "CLOSING_DATE",
+						"type": "date"
+					}
+				],
+				"typeProperties": {
+					"schema": "DWH2",
+					"table": "CHARGING_STATION"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DWH2_CPO')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "TotalevchargeAzSqlDatabase",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Azure SQL DB"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "CPO_PK",
+						"type": "nvarchar"
+					},
+					{
+						"name": "NAME",
+						"type": "nvarchar"
+					},
+					{
+						"name": "CPO_GROUP_FK",
+						"type": "nvarchar"
+					},
+					{
+						"name": "BUSINESS_ACTIVITY",
+						"type": "nvarchar"
+					},
+					{
+						"name": "SERVICE_STATUS",
+						"type": "nvarchar"
+					},
+					{
+						"name": "CREATION_DATE",
+						"type": "date"
+					},
+					{
+						"name": "IN_SERVICE_DATE",
+						"type": "date"
+					},
+					{
+						"name": "RETIRED_DATE",
+						"type": "date"
+					},
+					{
+						"name": "FUNCTIONAL_DATE",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "TECHNICAL_DATE",
+						"type": "date"
+					},
+					{
+						"name": "Id",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "CLOSING_DATE",
+						"type": "date"
+					}
+				],
+				"typeProperties": {
+					"schema": "DWH2",
+					"table": "CPO"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DWH2_CPO_GROUP')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "TotalevchargeAzSqlDatabase",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Azure SQL DB"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "CPO_GROUP_PK",
+						"type": "nvarchar"
+					},
+					{
+						"name": "TECHNICAL_DATE",
+						"type": "date"
+					},
+					{
+						"name": "FUNCTIONAL_DATE",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "Id",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "CLOSING_DATE",
+						"type": "date"
+					}
+				],
+				"typeProperties": {
+					"schema": "DWH2",
+					"table": "CPO_GROUP"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DWH2_EVSE')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "TotalevchargeAzSqlDatabase",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Azure SQL DB"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "EVSE_PK",
+						"type": "nvarchar"
+					},
+					{
+						"name": "CHARGING_STATION_FK",
+						"type": "nvarchar"
+					},
+					{
+						"name": "NAME",
+						"type": "nvarchar"
+					},
+					{
+						"name": "RETIRED_DATE",
+						"type": "date"
+					},
+					{
+						"name": "SERVICE_STATUS",
+						"type": "nvarchar"
+					},
+					{
+						"name": "IN_SERVICE_DATE",
+						"type": "date"
+					},
+					{
+						"name": "MAX_POWER",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "TECHNICAL_DATE",
+						"type": "date"
+					},
+					{
+						"name": "FUNCTIONAL_DATE",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "Id",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "CLOSING_DATE",
+						"type": "date"
+					}
+				],
+				"typeProperties": {
+					"schema": "DWH2",
+					"table": "EVSE"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DWH2_EVSE_MODEL')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "TotalevchargeAzSqlDatabase",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Azure SQL DB"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "MODEL_PK",
+						"type": "nvarchar"
+					},
+					{
+						"name": "NAME",
+						"type": "nvarchar"
+					},
+					{
+						"name": "DESCRIPTION",
+						"type": "nvarchar"
+					},
+					{
+						"name": "MANUFACTURER",
+						"type": "nvarchar"
+					},
+					{
+						"name": "TECHNICAL_DATE",
+						"type": "date"
+					},
+					{
+						"name": "FUNCTIONAL_DATE",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "Id",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "CLOSING_DATE",
+						"type": "date"
+					}
+				],
+				"typeProperties": {
+					"schema": "DWH2",
+					"table": "EVSE_MODEL"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DWH2_LOCATION')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "TotalevchargeAzSqlDatabase",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Azure SQL DB"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "LOCATION_PK",
+						"type": "nvarchar"
+					},
+					{
+						"name": "NAME",
+						"type": "nvarchar"
+					},
+					{
+						"name": "CPO_FK",
+						"type": "nvarchar"
+					},
+					{
+						"name": "CITY",
+						"type": "nvarchar"
+					},
+					{
+						"name": "COUNTRY_ID",
+						"type": "nvarchar"
+					},
+					{
+						"name": "ZIP_CODE",
+						"type": "nvarchar"
+					},
+					{
+						"name": "LATITUDE",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "LONGITUDE",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "TECHNICAL_DATE",
+						"type": "date"
+					},
+					{
+						"name": "FUNCTIONAL_DATE",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "Id",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "CLOSING_DATE",
+						"type": "date"
+					}
+				],
+				"typeProperties": {
+					"schema": "DWH2",
+					"table": "LOCATION"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DWH2_TRANSACTIONS')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "TotalevchargeAzSqlDatabase",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Azure SQL DB"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "EVSE_ID",
+						"type": "nvarchar"
+					},
+					{
+						"name": "TOKEN_ID",
+						"type": "nvarchar"
+					},
+					{
+						"name": "AUTH_METHOD",
+						"type": "nvarchar"
+					},
+					{
+						"name": "EMSP",
+						"type": "nvarchar"
+					},
+					{
+						"name": "SESSION_START_DATE",
+						"type": "date"
+					},
+					{
+						"name": "SESSION_STOP_DATE",
+						"type": "date"
+					},
+					{
+						"name": "CONNECTOR_TYPE",
+						"type": "nvarchar"
+					},
+					{
+						"name": "CONSUMED_ENERGY",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "SESSION_DURATION",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "MAX_POWER",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "COMPLIANCE",
+						"type": "bit"
+					},
+					{
+						"name": "TAXED_PRICE",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "NON_TAXED_PRICE",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "CURRENCY",
+						"type": "nvarchar"
+					},
+					{
+						"name": "TECHNICAL_DATE",
+						"type": "date"
+					},
+					{
+						"name": "FUNCTIONAL_DATE",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "Id",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "CLOSING_DATE",
+						"type": "date"
+					}
+				],
+				"typeProperties": {
+					"schema": "DWH2",
+					"table": "TRANSACTIONS"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/STG_CHARGING_STATION')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "TotalevchargeAzSqlDatabase",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Azure SQL DB"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "CHARGING_STATION_PK",
+						"type": "nvarchar"
+					},
+					{
+						"name": "LOCATION_FK",
+						"type": "nvarchar"
+					},
+					{
+						"name": "MODEL_FK",
+						"type": "nvarchar"
+					},
+					{
+						"name": "FUNCTIONAL_DATE",
+						"type": "nvarchar"
+					},
+					{
+						"name": "TECHNICAL_DATE",
+						"type": "nvarchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "STG",
+					"table": "CHARGING_STATION"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/STG_CPO')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "TotalevchargeAzSqlDatabase",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Azure SQL DB"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "CPO_PK",
+						"type": "nvarchar"
+					},
+					{
+						"name": "NAME",
+						"type": "nvarchar"
+					},
+					{
+						"name": "CPO_GROUP_FK",
+						"type": "nvarchar"
+					},
+					{
+						"name": "BUSINESS_ACTIVITY",
+						"type": "nvarchar"
+					},
+					{
+						"name": "SERVICE_STATUS",
+						"type": "nvarchar"
+					},
+					{
+						"name": "CREATION_DATE",
+						"type": "date"
+					},
+					{
+						"name": "IN_SERVICE_DATE",
+						"type": "date"
+					},
+					{
+						"name": "RETIRED_DATE",
+						"type": "date"
+					},
+					{
+						"name": "FUNCTIONAL_DATE",
+						"type": "nvarchar"
+					},
+					{
+						"name": "TECHNICAL_DATE",
+						"type": "nvarchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "STG",
+					"table": "CPO"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/STG_CPO_GROUP')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "TotalevchargeAzSqlDatabase",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Azure SQL DB"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "CPO_GROUP_PK",
+						"type": "nvarchar"
+					},
+					{
+						"name": "TECHNICAL_DATE",
+						"type": "nvarchar"
+					},
+					{
+						"name": "FUNCTIONAL_DATE",
+						"type": "nvarchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "STG",
+					"table": "CPO_GROUP"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/STG_EVSE')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "TotalevchargeAzSqlDatabase",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Azure SQL DB"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "EVSE_PK",
+						"type": "nvarchar"
+					},
+					{
+						"name": "CHARGING_STATION_FK",
+						"type": "nvarchar"
+					},
+					{
+						"name": "NAME",
+						"type": "nvarchar"
+					},
+					{
+						"name": "RETIRED_DATE",
+						"type": "date"
+					},
+					{
+						"name": "SERVICE_STATUS",
+						"type": "nvarchar"
+					},
+					{
+						"name": "IN_SERVICE_DATE",
+						"type": "date"
+					},
+					{
+						"name": "MAX_POWER",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "TECHNICAL_DATE",
+						"type": "nvarchar"
+					},
+					{
+						"name": "FUNCTIONAL_DATE",
+						"type": "nvarchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "STG",
+					"table": "EVSE"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/STG_EVSE_MODEL')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "TotalevchargeAzSqlDatabase",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Azure SQL DB"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "MODEL_PK",
+						"type": "nvarchar"
+					},
+					{
+						"name": "NAME",
+						"type": "nvarchar"
+					},
+					{
+						"name": "DESCRIPTION",
+						"type": "nvarchar"
+					},
+					{
+						"name": "MANUFACTURER",
+						"type": "nvarchar"
+					},
+					{
+						"name": "TECHNICAL_DATE",
+						"type": "nvarchar"
+					},
+					{
+						"name": "FUNCTIONAL_DATE",
+						"type": "nvarchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "STG",
+					"table": "EVSE_MODEL"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/STG_LOCATION')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "TotalevchargeAzSqlDatabase",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Azure SQL DB"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "LOCATION_PK",
+						"type": "nvarchar"
+					},
+					{
+						"name": "NAME",
+						"type": "nvarchar"
+					},
+					{
+						"name": "CPO_FK",
+						"type": "nvarchar"
+					},
+					{
+						"name": "CITY",
+						"type": "nvarchar"
+					},
+					{
+						"name": "COUNTRY_ID",
+						"type": "nvarchar"
+					},
+					{
+						"name": "ZIP_CODE",
+						"type": "nvarchar"
+					},
+					{
+						"name": "LATITUDE",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "LONGITUDE",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "TECHNICAL_DATE",
+						"type": "nvarchar"
+					},
+					{
+						"name": "FUNCTIONAL_DATE",
+						"type": "nvarchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "STG",
+					"table": "LOCATION"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/STG_TRANSACTIONS')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "TotalevchargeAzSqlDatabase",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Azure SQL DB"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "EVSE_ID",
+						"type": "nvarchar"
+					},
+					{
+						"name": "TOKEN_ID",
+						"type": "nvarchar"
+					},
+					{
+						"name": "AUTH_METHOD",
+						"type": "nvarchar"
+					},
+					{
+						"name": "EMSP",
+						"type": "nvarchar"
+					},
+					{
+						"name": "SESSION_START_DATE",
+						"type": "date"
+					},
+					{
+						"name": "SESSION_STOP_DATE",
+						"type": "date"
+					},
+					{
+						"name": "CONNECTOR_TYPE",
+						"type": "nvarchar"
+					},
+					{
+						"name": "CONSUMED_ENERGY",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "SESSION_DURATION",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "MAX_POWER",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "COMPLIANCE",
+						"type": "bit"
+					},
+					{
+						"name": "TAXED_PRICE",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "NON_TAXED_PRICE",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "CURRENCY",
+						"type": "nvarchar"
+					},
+					{
+						"name": "TECHNICAL_DATE",
+						"type": "nvarchar"
+					},
+					{
+						"name": "FUNCTIONAL_DATE",
+						"type": "nvarchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "STG",
+					"table": "TRANSACTIONS"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SrcFileChargingStation')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "TotalevchargeBlobStorage",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"FileName": {
+						"type": "string"
+					}
+				},
+				"folder": {
+					"name": "Azure Blob"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": {
+							"value": "@dataset().FileName",
+							"type": "Expression"
+						},
+						"folderPath": "charging_station",
+						"container": "inputfiles"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "charging_station_pk",
+						"type": "String"
+					},
+					{
+						"name": "location_fk",
+						"type": "String"
+					},
+					{
+						"name": "model_fk",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SrcFileCpo')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "TotalevchargeBlobStorage",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"FileName": {
+						"type": "string"
+					}
+				},
+				"folder": {
+					"name": "Azure Blob"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": {
+							"value": "@dataset().FileName",
+							"type": "Expression"
+						},
+						"folderPath": "cpo",
+						"container": "inputfiles"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "cpo_pk",
+						"type": "String"
+					},
+					{
+						"name": "name",
+						"type": "String"
+					},
+					{
+						"name": "cpo_group_fk",
+						"type": "String"
+					},
+					{
+						"name": "business_activity",
+						"type": "String"
+					},
+					{
+						"name": "service_status",
+						"type": "String"
+					},
+					{
+						"name": "creation_date",
+						"type": "String"
+					},
+					{
+						"name": "in_service_date",
+						"type": "String"
+					},
+					{
+						"name": "retired_date",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": []
+		}
+	]
+}

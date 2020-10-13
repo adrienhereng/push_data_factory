@@ -1,0 +1,228 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "df-totalevchargereport"
+		},
+		"ADLS_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of 'ADLS'"
+		},
+		"TotalevchargeAzSqlDatabase_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'TotalevchargeAzSqlDatabase'"
+		},
+		"TotalevchargeBlobStorage_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'TotalevchargeBlobStorage'"
+		},
+		"ADLS_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://dlstotalevcharge.dfs.core.windows.net"
+		},
+		"ChargingStation_event_properties_load_DWH1_CHARGING_STATION_parameters_SourceFile": {
+			"type": "string",
+			"defaultValue": "@trigger().outputs.body.fileName"
+		},
+		"ChargingStation_event_properties_typeProperties_scope": {
+			"type": "string",
+			"defaultValue": "/subscriptions/00e7b4b8-476f-48fe-9833-ef747bc8636d/resourceGroups/rg-totalevchargereport-dev-001/providers/Microsoft.Storage/storageAccounts/dlstotalevchargedev001"
+		},
+		"CpoGroup_event_properties_load_DWH1_CPO_GROUP_parameters_SourceFile": {
+			"type": "string",
+			"defaultValue": "@trigger().outputs.body.fileName"
+		},
+		"CpoGroup_event_properties_typeProperties_scope": {
+			"type": "string",
+			"defaultValue": "/subscriptions/00e7b4b8-476f-48fe-9833-ef747bc8636d/resourceGroups/rg-totalevchargereport-dev-001/providers/Microsoft.Storage/storageAccounts/dlstotalevchargedev001"
+		},
+		"Cpo_event_properties_load_DWH1_CPO_parameters_SourceFile": {
+			"type": "string",
+			"defaultValue": "@trigger().outputs.body.fileName"
+		},
+		"Cpo_event_properties_typeProperties_scope": {
+			"type": "string",
+			"defaultValue": "/subscriptions/00e7b4b8-476f-48fe-9833-ef747bc8636d/resourceGroups/rg-totalevchargereport-dev-001/providers/Microsoft.Storage/storageAccounts/dlstotalevchargedev001"
+		},
+		"EvseModel_event_properties_load_DWH1_EVSE_MODEL_parameters_SourceFile": {
+			"type": "string",
+			"defaultValue": "@trigger().outputs.body.fileName"
+		},
+		"EvseModel_event_properties_typeProperties_scope": {
+			"type": "string",
+			"defaultValue": "/subscriptions/00e7b4b8-476f-48fe-9833-ef747bc8636d/resourceGroups/rg-totalevchargereport-dev-001/providers/Microsoft.Storage/storageAccounts/dlstotalevchargedev001"
+		},
+		"Evse_event_properties_load_DWH1_EVSE_parameters_SourceFile": {
+			"type": "string",
+			"defaultValue": "@trigger().outputs.body.fileName"
+		},
+		"Evse_event_properties_typeProperties_scope": {
+			"type": "string",
+			"defaultValue": "/subscriptions/00e7b4b8-476f-48fe-9833-ef747bc8636d/resourceGroups/rg-totalevchargereport-dev-001/providers/Microsoft.Storage/storageAccounts/dlstotalevchargedev001"
+		},
+		"Location_event_properties_load_DWH1_LOCATION_parameters_SourceFile": {
+			"type": "string",
+			"defaultValue": "@trigger().outputs.body.fileName"
+		},
+		"Location_event_properties_typeProperties_scope": {
+			"type": "string",
+			"defaultValue": "/subscriptions/00e7b4b8-476f-48fe-9833-ef747bc8636d/resourceGroups/rg-totalevchargereport-dev-001/providers/Microsoft.Storage/storageAccounts/dlstotalevchargedev001"
+		},
+		"Transactions_event_properties_load_DWH1_TRANSACTIONS_parameters_SourceFile": {
+			"type": "string",
+			"defaultValue": "@trigger().outputs.body.fileName"
+		},
+		"Transactions_event_properties_typeProperties_scope": {
+			"type": "string",
+			"defaultValue": "/subscriptions/00e7b4b8-476f-48fe-9833-ef747bc8636d/resourceGroups/rg-totalevchargereport-dev-001/providers/Microsoft.Storage/storageAccounts/dlstotalevchargedev001"
+		},
+		"containerUri": {
+			"type": "string",
+			"metadata": "URI to storage account containing linked ARM templates"
+		},
+		"containerSasToken": {
+			"type": "string",
+			"metadata": "Sas token to storage account containing linked ARM templates"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "df-totalevchargereport_ArmTemplate_0",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2018-02-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_0.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					},
+					"ADLS_accountKey": {
+						"value": "[parameters('ADLS_accountKey')]"
+					},
+					"TotalevchargeAzSqlDatabase_connectionString": {
+						"value": "[parameters('TotalevchargeAzSqlDatabase_connectionString')]"
+					},
+					"TotalevchargeBlobStorage_connectionString": {
+						"value": "[parameters('TotalevchargeBlobStorage_connectionString')]"
+					},
+					"ADLS_properties_typeProperties_url": {
+						"value": "[parameters('ADLS_properties_typeProperties_url')]"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "df-totalevchargereport_ArmTemplate_1",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2018-02-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_1.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					}
+				}
+			},
+			"dependsOn": [
+				"[resourceId('Microsoft.Resources/deployments', 'df-totalevchargereport_ArmTemplate_0')]"
+			]
+		},
+		{
+			"name": "df-totalevchargereport_ArmTemplate_2",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2018-02-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_2.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					}
+				}
+			},
+			"dependsOn": [
+				"[resourceId('Microsoft.Resources/deployments', 'df-totalevchargereport_ArmTemplate_1')]"
+			]
+		},
+		{
+			"name": "df-totalevchargereport_ArmTemplate_3",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2018-02-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_3.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					},
+					"ChargingStation_event_properties_load_DWH1_CHARGING_STATION_parameters_SourceFile": {
+						"value": "[parameters('ChargingStation_event_properties_load_DWH1_CHARGING_STATION_parameters_SourceFile')]"
+					},
+					"ChargingStation_event_properties_typeProperties_scope": {
+						"value": "[parameters('ChargingStation_event_properties_typeProperties_scope')]"
+					},
+					"CpoGroup_event_properties_load_DWH1_CPO_GROUP_parameters_SourceFile": {
+						"value": "[parameters('CpoGroup_event_properties_load_DWH1_CPO_GROUP_parameters_SourceFile')]"
+					},
+					"CpoGroup_event_properties_typeProperties_scope": {
+						"value": "[parameters('CpoGroup_event_properties_typeProperties_scope')]"
+					},
+					"Cpo_event_properties_load_DWH1_CPO_parameters_SourceFile": {
+						"value": "[parameters('Cpo_event_properties_load_DWH1_CPO_parameters_SourceFile')]"
+					},
+					"Cpo_event_properties_typeProperties_scope": {
+						"value": "[parameters('Cpo_event_properties_typeProperties_scope')]"
+					},
+					"EvseModel_event_properties_load_DWH1_EVSE_MODEL_parameters_SourceFile": {
+						"value": "[parameters('EvseModel_event_properties_load_DWH1_EVSE_MODEL_parameters_SourceFile')]"
+					},
+					"EvseModel_event_properties_typeProperties_scope": {
+						"value": "[parameters('EvseModel_event_properties_typeProperties_scope')]"
+					},
+					"Evse_event_properties_load_DWH1_EVSE_parameters_SourceFile": {
+						"value": "[parameters('Evse_event_properties_load_DWH1_EVSE_parameters_SourceFile')]"
+					},
+					"Evse_event_properties_typeProperties_scope": {
+						"value": "[parameters('Evse_event_properties_typeProperties_scope')]"
+					},
+					"Location_event_properties_load_DWH1_LOCATION_parameters_SourceFile": {
+						"value": "[parameters('Location_event_properties_load_DWH1_LOCATION_parameters_SourceFile')]"
+					},
+					"Location_event_properties_typeProperties_scope": {
+						"value": "[parameters('Location_event_properties_typeProperties_scope')]"
+					},
+					"Transactions_event_properties_load_DWH1_TRANSACTIONS_parameters_SourceFile": {
+						"value": "[parameters('Transactions_event_properties_load_DWH1_TRANSACTIONS_parameters_SourceFile')]"
+					},
+					"Transactions_event_properties_typeProperties_scope": {
+						"value": "[parameters('Transactions_event_properties_typeProperties_scope')]"
+					}
+				}
+			},
+			"dependsOn": [
+				"[resourceId('Microsoft.Resources/deployments', 'df-totalevchargereport_ArmTemplate_2')]"
+			]
+		}
+	]
+}
